@@ -1,7 +1,7 @@
 Introduction to Snow
 =============
 
-2010-12-10 Ð Initial version
+2010-12-10 - Initial version
 
 
 Introduction
@@ -56,7 +56,7 @@ Some common feature have been added for websites to handle web page titles or he
 Configuration
 -------------
 
-All configuration is done centrally in the file Òconfig.inc.phpÓ which is loaded at startup. It can contain logic and will be run from the Snow Context scope. It uses a key/value format where values can be any PHP value.
+All configuration is done centrally in the file "config.inc.php" which is loaded at startup. It can contain logic and will be run from the Snow Context scope. It uses a key/value format where values can be any PHP value.
 
 Definition in /config.inc.php is done with the method define where the first argument is the key and the second is the value to be stored against it:
  
@@ -76,7 +76,7 @@ snow_facebook_client	/plugins/facebook	client.php
 snow_facebook	/plugins/facebook	facebook.php
 snow_facebook_clients_soap	/plugins/facebook/clients	soap.php
 
-Note: when a file name is the same as the plugin name, then the class name does not need to repeat that name twice as in Òsnow_facebookÓ.
+Note: when a file name is the same as the plugin name, then the class name does not need to repeat that name twice as in "*snow_facebook*".
 
 Files should contain only one class and optimally no script to be fully object oriented. It is common practice to create models of database or datastore objects as Data Access Objects.
 
@@ -113,7 +113,7 @@ http://localhost/api/submit	REST API	/content/api/submit.php
 When accessing a controller based on a sub-folder such as http://localhost/contact/stockholm, where contact is not a special directory,  the controller will be able to use the path to serve specific content; in this case related to /stockholm. To do so, the PHP code can call the Snow Context getContent method with the index of the path starting at 0 for the script name, and an optional default value in case the path is shorter than assumed:
  
     $city = $snow_context->getContent( 1 ); 
-    $area = $snow_context->getContent( 2, ÒcentralÓ );
+    $area = $snow_context->getContent( 2, "central" );
 
 Controller can technically output any type of content directly, although web pages will expect to match content encoding and format set by the header. Also, it is common practice to rely on templates (see below) to output content.
 
@@ -127,7 +127,7 @@ Templates
 
 Following the MVC architecture, templates where added to separated views from the controllers and be reusable. With the default implementation, templates are placed in the folder /templates in PHP files and loaded from anywhere in the code using the file name without the php extension as first parameter and an optional second parameter to pass additional values named $content_id from the template scope: 
 
-    $snow_context->loadTemplate( Òuser_listÓ, array( 1, 4, 5) );
+    $snow_context->loadTemplate( "user_list", array( 1, 4, 5) );
 
 Localization
 ------------
@@ -136,7 +136,7 @@ A first implementation of localization has been implemented using Unix/PHP gette
 
 When relying on Snow localization, text output should be done using PHP double underscore function:
 
-    __( ÒHello world!Ó );
+    __( "Hello world!" );
 
 More details are provided in a separate document.
 
@@ -149,6 +149,6 @@ Logging instruction should be made with a log level from 1 to 5 (Information, De
 
 To log an event, developers can rely on Snow Context anywhere in the code using the log method with a message string and a log level integer:
 
-    $snow_context->log( ÒCould not start serverÓ, 5 );
+    $snow_context->log( "Could not start server", 5 );
 	
 
