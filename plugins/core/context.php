@@ -374,6 +374,10 @@ class snow_core_context
 	{
 		$theme = is_null($theme) ? $this->getConfig("views.theme","web") : $theme;
 		
+		// legacy
+		if( !$controllersEnabled )
+			$snow_context = $this;
+		
 		if( $controllersEnabled )
 			$file = $this->basedir . "/". $this->getConfig("views.dir","views") ."/{$theme}/{$viewName}.php";
 		else

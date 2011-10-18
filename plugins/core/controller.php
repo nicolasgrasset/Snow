@@ -144,7 +144,7 @@ class snow_core_controller
 		$this->httpResponseCode( $http_response_code );
 		
 		// Headers
-		if( !is_null($header) )
+		if( !is_null($headers) )
 			$this->renderHeader( $headers );
 		
 		// Get view
@@ -210,7 +210,10 @@ class snow_core_controller
 		if( $controllersEnabled )
 			Snow::app()->loadView( "layout/header" );
 		else
+		{
+			$snow_context = Snow::app();
 			include( Snow::app()->readHeader() );
+		}
 	}
 	
 	
@@ -219,7 +222,11 @@ class snow_core_controller
 		if( $controllersEnabled )
 			Snow::app()->loadView( "layout/footer" );
 		else
+		{
+			$snow_context = Snow::app();
 			include( Snow::app()->readFooter() );
+		}
+			
 	}
 	
 	
