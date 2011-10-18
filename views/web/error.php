@@ -1,0 +1,1 @@
+An error (<?= $errorCode; ?>) has occured: <?= $errorMessage; ?>

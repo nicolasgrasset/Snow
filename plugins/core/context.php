@@ -288,13 +288,7 @@ class snow_core_context
 
 	public function invalidRequest()
 	{
-		// TODO: EDIT THIS with default 404;
-		echo "request: " . $this->request."<br/>";
-		echo "siteurl: " . $this->config->getKey( 'baseurl' ) ."<br/>";
-		echo "basepath: " . parse_url($this->config->getKey( 'baseurl' ), PHP_URL_PATH)."<br/>";
-		echo "basedir: {$this->basedir}<br/>";
-		echo "content: ".$this->readResponse()."<br/>";
-		echo __("404 error. Please edit me");
+		$this->controller = new snow_core_controller( "error-404" );
 	}
 	
 	public function routeHttpRequest( $legacyContent = false )
@@ -302,8 +296,8 @@ class snow_core_context
 		
 		if( $this->requestIsInvalid() )
 			$this->invalidRequest();
-		
-		$this->controller = new snow_core_controller( $this->getControllerName(), $legacyContent );
+		else
+			$this->controller = new snow_core_controller( $this->getControllerName() );
 	}
 	
 	public function getControllerFileName( $controllerName )

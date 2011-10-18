@@ -1,8 +1,8 @@
 <?php 
 /**
- * Default controller
+ * Error controller
  * 
- * All requests to / will load this file.
+ * All 404 errors will load this file.
  * 
  *
  * Licensed under The MIT License
@@ -17,6 +17,5 @@
 
 
 // Simply load a view
-$this->render( "my_template", array( "date" => date("r") ), "web", 200 );
+$this->render( "error", array("errorCode"=>404, "errorMessage"=> "Could not find content for your query" ), "web", 404 );
 
-?>

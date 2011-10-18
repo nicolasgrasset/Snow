@@ -4,7 +4,7 @@ Is it any good? Yes.
 Introduction to Snow
 =============
 
-2011-10-18 - version 0.9.1 with the introduction of Snow::app()
+2011-10-18 - version 0.9.1 with the introduction of Snow::app() and better seperation of Controller and View logic
 
 2010-12-10 - Initial version
 
@@ -96,8 +96,6 @@ Websites and static content should always be located under /sites. In the config
 
 While the sites subfolder follow nearly no requirement, a few files will be expected by Snow for most site:
  * /sites/YOUR_SITE/init.php
- * /sites/YOUR_SITE/inc/header.php
- * /sites/YOUR_SITE/inc/footer.php
 
 The most important one is init.php. Its content will be run just after loading Snow and before any other logic for all script. This is typically where website will have the database logic and user management logic. It should only contain content relevant to all web page, interface or script.
 
@@ -106,7 +104,7 @@ The two other files are expected for all websites and contain the header and foo
 Controllers
 -----------
 
-Web services and applications will use URL controllers which are each corresponding to a file placed under /content. Files placed directly under /content are web pages and will be placed within header and footer as previously described. Directories can also be created and need to be defined in the config file as static directories or in the site init file as smart directories. In both case, the content type can be set to anything by the controller itself.
+Web services and applications will use URL controllers which are each corresponding to a file placed under /controllers. Files placed directly under /controllers are web pages and will be placed within header and footer as previously described. Directories can also be created and need to be defined in the config file as static directories or in the site init file as smart directories. In both case, the content type can be set to anything by the controller itself.
 
 URL	Type	File
 http://localhost/	web page	/content/index.php
@@ -120,14 +118,35 @@ When accessing a controller based on a sub-folder such as http://localhost/conta
     $city = Snow::app()->getContent( 1 ); 
     $area = Snow::app()->getContent( 2, "central" );
 
-Controller can technically output any type of content directly, although web pages will expect to match content encoding and format set by the header. Also, it is common practice to rely on templates (see below) to output content.
+Controller are built to retrieve data from models (business logic in plugins) and pass that context data to view while loading the appropriate view. Controllers are loaded in the scope of a snow_core_controller object and can therefore directly access some methods regarding the view or the request.
+
+In the following example, the view file _SNOW_ROOT_/views/mobile/search-results.php will be loaded, with 2 variables and where "mobile" is the theme directory and 200 is the HTTP response code.
+
+    $this->render( "search-results", array("query"=>$queryString, "results"=>$results), "mobile", 200 );
+    
+In the following example, the $emailHtml variable receives the content of a view (_SNOW_ROOT_/views/email/notifications/welcome.php) as a string
+
+    $emailHtml = $this->renderPartial( "notifications/welcome", array("user"=>$userObject), "email", true );
+    
+In the following example, the loop will directly output each message object using the proper view, and the default theme ("web").
+
+    foreach( $messages as $message ) 
+    {
+        $this->renderPartial( "inbox/message", compact("message") );
+    }
+
+Views
+-----
+
+View can technically output any type of content directly, although web pages will expect to match content encoding and format set by the header. Views should rely exclusively on variables in the local scope and avoid referring to Snow::app().
+
 
 Additional common features
 --------------------------
 
 Additional features have been developed for Snow with a set of default handling classes that are made to be replaced if necessary depending on the project.
 
-Templates
+Templates (deprecated, replaced by views)
 ---------
 
 Following the MVC architecture, templates where added to separated views from the controllers and be reusable. With the default implementation, templates are placed in the folder /templates in PHP files and loaded from anywhere in the code using the file name without the php extension as first parameter and an optional second parameter to pass additional values named $content_id from the template scope: 
