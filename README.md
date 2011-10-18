@@ -5,6 +5,7 @@ Introduction to Snow
 =============
 
 2011-10-18 - version 0.9.1 with the introduction of Snow::app()
+
 2010-12-10 - Initial version
 
 
