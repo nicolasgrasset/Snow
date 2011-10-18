@@ -19,6 +19,14 @@ define("SNOW_ENV",  "live");
 // Site to load
 $this->define(	'site', 'default');
 
+// Snow 0.9.1 MVC support (comment these lines for full backward compatibility)
+$this->define(	'views.theme', 			'web');
+$this->define(	'views.dir', 			'views');
+$this->define(	'controllers.enabled', 	true );
+$this->define(	'controllers.dir', 		'controllers' );
+
+
+
 // Localization
 $this->define(	'local.url', 	false );								// Activate or deactivate local in path (ex en/ sv/)
 $this->define(	'local.paths', 	array('en'=>'en_US','sv'=>'sv_SE') );	// Locales to activate in path

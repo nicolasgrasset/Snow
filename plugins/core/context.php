@@ -281,7 +281,7 @@ class snow_core_context
 	 */
 	public function requestIsInvalid()
 	{
-		if( !file_exists( $this->readResponse() ) )
+		if( !file_exists( $this->getControllerFileName( $this->getControllerName() ) ) )
 			return true;
 		return false;
 	}
@@ -297,14 +297,26 @@ class snow_core_context
 		echo __("404 error. Please edit me");
 	}
 	
+	public function routeHttpRequest( $legacyContent = false )
+	{
+		
+		if( $this->requestIsInvalid() )
+			$this->invalidRequest();
+		
+		$this->controller = new snow_core_controller( $this->getControllerName(), $legacyContent );
+	}
 	
+	public function getControllerFileName( $controllerName )
+	{
+		return $this->basedir . "/". $this->getConfig("controllers.dir","content") ."/" . $controllerName . ".php";
+	}
 	
-	public function readResponse()
+	public function getControllerName()
 	{
 		if( $this->requestIsPage() )
-			return $this->basedir . "/content/" . $this->getInc() . ".php";
+			return $this->getInc();
 		else
-			return $this->basedir . "/content/" . $this->getInc() . "/" . $this->getContent(1) . ".php";
+			return $this->getInc() . "/" . $this->getContent(1);
 	}
 	
 	
@@ -323,6 +335,7 @@ class snow_core_context
 	
 	
 	// Returns Site header filename (full path)
+	// Legacy support
 	public function readHeader()
 	{
 		return $this->getSiteDir() . "/inc/header.php";
@@ -330,6 +343,7 @@ class snow_core_context
 	
 	
 	// Returns Site footer filename (full path)
+	// Legacy support
 	public function readFooter()
 	{
 		return $this->getSiteDir() . "/inc/footer.php";
@@ -353,6 +367,26 @@ class snow_core_context
 	public function loadTemplate( $template, $content_id = null )
 	{
 		$file = $this->basedir . "/templates/" . $template . ".php";
+		
+		if( file_exists($file) )
+			include( $file );
+		else		
+			return false;
+	}
+	
+	
+	
+	public function loadView( $viewName, $data = null, $theme = null, $controllersEnabled = true )
+	{
+		$theme = is_null($theme) ? $this->getConfig("views.theme","web") : $theme;
+		
+		if( $controllersEnabled )
+			$file = $this->basedir . "/". $this->getConfig("views.dir","views") ."/{$theme}/{$viewName}.php";
+		else
+			$file = $this->getControllerFileName( $viewName );
+		
+		if( $controllersEnabled && is_array($data) )
+			extract($data);
 		
 		if( file_exists($file) )
 			include( $file );

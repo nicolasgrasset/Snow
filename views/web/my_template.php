@@ -1,8 +1,6 @@
-<?php 
+<?php
 /**
- * Default controller
- * 
- * All requests to / will load this file.
+ * Empty hello world template
  * 
  *
  * Licensed under The MIT License
@@ -15,8 +13,10 @@
  * 
  */
 
-
-// Simply load a template (view)
-Snow::app()->loadTemplate( "my_template" );
-
 ?>
+Hello "world". The time is <?= $date; ?>
+<br/> 
+<br/>
+Snow is now installed:
+<br/>
+<a href="./api/phpinfo">Test PHP version and .htaccess config</a>
