@@ -17,6 +17,6 @@
 
 
 // Simply load a template (view)
-$snow_context->loadTemplate( "my_template" );
+Snow::app()->loadTemplate( "my_template" );
 
 ?>

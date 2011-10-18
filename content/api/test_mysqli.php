@@ -2,7 +2,7 @@
 /**
  * SQL DB test page
  * 
- * Simple test assuming the DB is setup under $snow_context->v['db'],
+ * Simple test assuming the DB is setup under Snow::app()->v['db'],
  * most often done under sites/YOUR_SITE/init.php
  * 
  *
@@ -16,7 +16,7 @@
  * 
  */
 
-$res = $snow_context->v['db']->query( "SHOW TABLES" );
+$res = Snow::app()->v['db']->query( "SHOW TABLES" );
 
 if( $res instanceof isnow_db_result )
 	echo "MySQLi is working. # of tables: " . $res->num_rows;

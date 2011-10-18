@@ -37,13 +37,11 @@ class snow_admin implements isnow_smartdir
 	
 	public function init()
 	{
-		global $snow_context;
-		
-		if( !is_null($this->user) && !$this->user->isAdmin() && $snow_context->getContent() != "login")
+		if( !is_null($this->user) && !$this->user->isAdmin() && Snow::app()->getContent() != "login")
 		{
 			// TODO: Keep current request in session for auto redirection after login
 			setcookie("adminreq", $_SERVER['REQUEST_URI'], time()+120, "/");
-			header("Location: " . $snow_context->getBaseWeb() . "/" . $snow_context->getInc() . "/login" ); 
+			header("Location: " . Snow::app()->getBaseWeb() . "/" . Snow::app()->getInc() . "/login" ); 
 		}
 		
 	}

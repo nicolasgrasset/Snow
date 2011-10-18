@@ -42,7 +42,7 @@ class snow_core_context
 	public $v = array();
 
 
-	function __construct( &$config = null, $analyze_request = true )
+	function __construct( snow_core_config &$config = null, $analyze_request = true )
 	{
 		/*
 		 *	Parse query
@@ -352,8 +352,6 @@ class snow_core_context
 	
 	public function loadTemplate( $template, $content_id = null )
 	{
-		global $snow_context;
-		
 		$file = $this->basedir . "/templates/" . $template . ".php";
 		
 		if( file_exists($file) )

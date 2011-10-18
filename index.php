@@ -22,35 +22,35 @@ require_once( $maindir . "plugins/init.php" );
 // Load config
 $config = new snow_core_config();
 
-// Start Snow engine
-$snow_context = new snow_core_context( $config );
+// Start Snow engine ($snow_context set for backward compatibility)
+$snow_context = Snow::app( $config );
 
 // Initialize theme
-include( $snow_context->getSiteDir() . "/init.php" );
+include( Snow::app()->getSiteDir() . "/init.php" );
 
 
 // Invalid request
-if( $snow_context->requestIsInvalid() )
-	$snow_context->invalidRequest();
+if( Snow::app()->requestIsInvalid() )
+	Snow::app()->invalidRequest();
 	
 // Full document request (header + footer)
-elseif( $snow_context->requestIsPage() && $snow_context->getConfig( 'ob_gzhandler', 'true' ) == 'true' )
+elseif( Snow::app()->requestIsPage() && Snow::app()->getConfig( 'ob_gzhandler', 'true' ) == 'true' )
 {
 	ob_start();
-	include( $snow_context->readResponse() );
+	include( Snow::app()->readResponse() );
 	$page = ob_get_contents();
 	ob_end_clean();
 	
 	ob_start('ob_gzhandler');
-	include( $snow_context->readHeader() );
+	include( Snow::app()->readHeader() );
 	echo $page;
-	include( $snow_context->readFooter() );
+	include( Snow::app()->readFooter() );
 	
 }
 
 // API request
 else
-	include( $snow_context->readResponse() );
+	include( Snow::app()->readResponse() );
 
 	
 	

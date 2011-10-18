@@ -85,8 +85,6 @@ class snow_filelibrary
 	
 	public function save( $src_file, $isphoto = true, $mimetype = "image/jpeg", $formats = null, $id = null )
 	{
-		global $snow_context;
-		
 		$filesToCopy = array();
 		$formatstr = "original";
 		$extension = (($pos = strrpos($src_file, ".")) === FALSE) ? "" : substr($src_file, $pos);
@@ -95,7 +93,7 @@ class snow_filelibrary
 		// Check if file exists
 		if( !file_exists( $src_file ) )
 		{
-			$snow_context->log( "Could not open file $src_file", 3);
+			Snow::app()->log( "Could not open file $src_file", 3);
 			return false;
 		}
 		
@@ -103,7 +101,7 @@ class snow_filelibrary
 		$testImage = getimagesize($src_file);
 		if( $isphoto && $testImage === false )
 		{
-			$snow_context->log( "File $src_file is not an image", 2);
+			Snow::app()->log( "File $src_file is not an image", 2);
 			return false;
 		}
 		
@@ -128,10 +126,10 @@ class snow_filelibrary
 			$tmpfile = "original" . $extension;
 			if( !copy( $src_file, $tmpname . $tmpfile ) )
 			{
-				$snow_context->log( "Could not copy $src_file to {$tmpname}{$tmpfile}", 3);
+				Snow::app()->log( "Could not copy $src_file to {$tmpname}{$tmpfile}", 3);
 				return false;
 			}	
-			$snow_context->log( "Original file should be at " . $tmpname . $tmpfile, 1);
+			Snow::app()->log( "Original file should be at " . $tmpname . $tmpfile, 1);
 			$filesToCopy[ $tmpfile ] = $tmpname . $tmpfile;
 			
 			
@@ -143,7 +141,7 @@ class snow_filelibrary
 				$tmpfile = $width . "x" . $height . $extension;
 				if( !$this->imageCopyResample($src_file, $tmpname . $tmpfile, $one[0], $one[1] ) )
 				{
-					$snow_context->log( "Could not resample image $src_file to $width x $height", 3);
+					Snow::app()->log( "Could not resample image $src_file to $width x $height", 3);
 					foreach( $filesToCopy as $one )
 					{
 						if( $one != $src_file)
@@ -165,7 +163,7 @@ class snow_filelibrary
 		// Run SQL
 		if( !$this->db->query( $sql ) )
 		{
-			$snow_context->log( "Could not update DB table {$this->dbt}", 3);
+			Snow::app()->log( "Could not update DB table {$this->dbt}", 3);
 			foreach( $filesToCopy as $one )
 			{
 				if( $one != $src_file)
@@ -183,9 +181,9 @@ class snow_filelibrary
 		{
 			$this->getFileName($id, $fname );
 			if( $this->fs->save( $path, $this->getFileName($id, $fname ), $mimetype ) > 0 )
-				$snow_context->log( "File $fname saved in filestore", 1);
+				Snow::app()->log( "File $fname saved in filestore", 1);
 			else
-				$snow_context->log( "Could not save $fname in filestore @ " . $this->getFileName($id, $fname ), 3);
+				Snow::app()->log( "Could not save $fname in filestore @ " . $this->getFileName($id, $fname ), 3);
 			@unlink( $one );
 		}
 		

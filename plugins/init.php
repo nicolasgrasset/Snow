@@ -1,6 +1,6 @@
 <?php
 /**
- * Snow core initializr
+ * Snow core initializer
  * 
  * Contains generic logic for plugins:
  *  -> autoloader to load all snow_* classes in plugins without includes
@@ -20,6 +20,9 @@
 // Load interfaces
 require_once( dirname(__FILE__) . '/core/interfaces.php');
 
+// Load Snow
+require_once( dirname(__FILE__) . '/snow.php');
+
 // Define autoloader
 function snow_autoLoader($className){
 	$className = substr($className, 0, 5) == 'snow_' ? substr($className, 5) : $className;
@@ -38,9 +41,7 @@ spl_autoload_register('snow_autoLoader');
 
 function __( $str ) {
 	
-	global $snow_context;
-	
-	$str = $snow_context->getT()->gettext( $str );
+	$str = Snow::app()->getT()->gettext( $str );
 	
 	for( $i = func_num_args()-1 ; $i ; --$i )
 	{

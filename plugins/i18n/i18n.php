@@ -41,42 +41,40 @@ class snow_i18n
 	
 	public function __construct()
 	{
-		global $snow_context;
-		
 		// SetLocale
-		$newlocale = setlocale(LC_MESSAGES, $snow_context->getLocale(), $snow_context->getLocale() . "." . $snow_context->getConfig('local.codeset','UTF-8') );
+		$newlocale = setlocale(LC_MESSAGES, Snow::app()->getLocale(), Snow::app()->getLocale() . "." . Snow::app()->getConfig('local.codeset','UTF-8') );
 		
 		// ENV variable for OSX/Windows
 		putenv("LANG=$newlocale");
 		
 		// Log actual result
-		if( $newlocale != $snow_context->getLocale() && $newlocale != $snow_context->getLocale() . "." . $snow_context->getConfig('local.codeset','UTF-8') )
-			$snow_context->log( "Could not set locale to " . $snow_context->getLocale() . " but to " . $newlocale, 3);
+		if( $newlocale != Snow::app()->getLocale() && $newlocale != Snow::app()->getLocale() . "." . Snow::app()->getConfig('local.codeset','UTF-8') )
+			Snow::app()->log( "Could not set locale to " . Snow::app()->getLocale() . " but to " . $newlocale, 3);
 		else
-			$snow_context->log( "Locale LC_MESSAGES now set to " . $newlocale, 1);
+			Snow::app()->log( "Locale LC_MESSAGES now set to " . $newlocale, 1);
 			
-		$domains = $snow_context->getConfig('local.domain','default');
+		$domains = Snow::app()->getConfig('local.domain','default');
 		if( !is_array($domains) )
 			$domains = array($domains);
 			
 		// Point to snow language directory
-		$locales_dir = realpath( $snow_context->getBaseDir() . $snow_context->getConfig('local.dir','/locales') );
+		$locales_dir = realpath( Snow::app()->getBaseDir() . Snow::app()->getConfig('local.dir','/locales') );
 		foreach( $domains as $onedomain )
 		{
 			$bindtextdomain_set = bindtextdomain( $onedomain, $locales_dir );
-			$bindtextdomain_codeset_set =bind_textdomain_codeset( $onedomain, $snow_context->getConfig('local.codeset','UTF-8')); 
+			$bindtextdomain_codeset_set =bind_textdomain_codeset( $onedomain, Snow::app()->getConfig('local.codeset','UTF-8')); 
 		}
 		if( $bindtextdomain_set != $locales_dir )
-			$snow_context->log( "Locale domain could not be set to $locales_dir: " . $bindtextdomain_set, 1 );
+			Snow::app()->log( "Locale domain could not be set to $locales_dir: " . $bindtextdomain_set, 1 );
 		
 		
 		// Set domain
-		$domain = $snow_context->getConfig('local.domain','default');
+		$domain = Snow::app()->getConfig('local.domain','default');
 		foreach( $domains as $onedomain )
 		{
 			$textdomain_set = textdomain( $onedomain );
 			if( $textdomain_set != $onedomain )
-				$snow_context->log( "Text domain could not be set to $domain: " . $textdomain_set, 1 );
+				Snow::app()->log( "Text domain could not be set to $domain: " . $textdomain_set, 1 );
 		}
 		
 		
@@ -84,8 +82,6 @@ class snow_i18n
 	
 	public function gettext( $text )
 	{
-		global $snow_context;
-		
 		return _( $text );
 	}
 	

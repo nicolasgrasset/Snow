@@ -35,14 +35,12 @@ class snow_core_logger
 	
 	public function log( $message, $level = 3 )
 	{
-		global $snow_context;
-		
 		$stack = debug_backtrace();
 		$stack = $this->readPluginName($stack);
 		$stackName = "{" . $stack . "}";
 			
-		$packageLevel = $snow_context->getConfig( 'log.' . $stack );
-		$globalLevel = $snow_context->getConfig( 'log.level', 1 );
+		$packageLevel = Snow::app()->getConfig( 'log.' . $stack );
+		$globalLevel = Snow::app()->getConfig( 'log.level', 1 );
 		
 		
 		if( ( !is_null($packageLevel) && $level < $packageLevel )		// package log level is set, and is higher than this event
@@ -53,7 +51,7 @@ class snow_core_logger
 		$level = $this->adjustLevel( $level );
 		
 		$date = date( "c" );
-		if( !isset($snow_context->v['cli']) )
+		if( !isset(Snow::app()->v['cli']) )
 			$user_ip = $_SERVER['REMOTE_ADDR'];
 		else
 			$user_ip = "php_cli";
@@ -70,17 +68,15 @@ class snow_core_logger
 	
 	private function write( $line, $level )
 	{
-		global $snow_context;
-		
-		if( !is_null( $snow_context->getConfig( 'log.file' ) ) )
-			error_log( $line . "\n", 3, $snow_context->getConfig( 'log.file' ) );
+		if( !is_null( Snow::app()->getConfig( 'log.file' ) ) )
+			error_log( $line . "\n", 3, Snow::app()->getConfig( 'log.file' ) );
 		else
 			error_log( $line, 0 );
 			
 		if( $level == 5
-			&& $snow_context->getConfig( 'log.email', false )
-			&& strlen($snow_context->getConfig( 'log.emailto', "" )) > 5 )
-			error_log( $line, 1, $snow_context->getConfig( 'log.emailto' ) );
+			&& Snow::app()->getConfig( 'log.email', false )
+			&& strlen(Snow::app()->getConfig( 'log.emailto', "" )) > 5 )
+			error_log( $line, 1, Snow::app()->getConfig( 'log.emailto' ) );
 			
 	}
 	

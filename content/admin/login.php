@@ -13,12 +13,12 @@
  * 
  */
 
-if( $snow_context->getContent(2) == "auth" )
+if( Snow::app()->getContent(2) == "auth" )
 {
 	setcookie("admintest", true, time()+120, "/");
 	$q = isset($_COOKIE['adminreq']) ? $_COOKIE['adminreq'] : "";
-	header("Location: " . $snow_context->getBaseWeb() . $q);
+	header("Location: " . Snow::app()->getBaseWeb() . $q);
 }
 else
-	echo "<a href='". $snow_context->getBaseWeb() . "/" . $snow_context->getInc() ."/login/auth'>Please login</a>";
+	echo "<a href='". Snow::app()->getBaseWeb() . "/" . Snow::app()->getInc() ."/login/auth'>Please login</a>";
 

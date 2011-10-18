@@ -46,17 +46,13 @@ class snow_filestore
 	
 	public function getRoot()
 	{
-		global $snow_context;
-		
-		return $this->cleanPath( $snow_context->getBaseDir() . "/fs/" . $this->dir) . "/";
+		return $this->cleanPath( Snow::app()->getBaseDir() . "/fs/" . $this->dir) . "/";
 		
 	}
 	
 	public function getUrl( $file )
 	{
-		global $snow_context;
-		
-		return $snow_context->getBaseWeb(). "/fs/" . $this->dir . "/" . $file;
+		return Snow::app()->getBaseWeb(). "/fs/" . $this->dir . "/" . $file;
 		
 	}
 	
@@ -77,8 +73,6 @@ class snow_filestore
 	
 	public function createDir( $file )
 	{
-		global $snow_context;
-		
 		if( strrpos( $file, "/" ) === false)
 			return false;
 			
@@ -90,7 +84,7 @@ class snow_filestore
 		$ret = mkdir( $dir, 0700, true);
 			
 		if( !$ret )
-			$snow_context->log( "Could not create $dir", 3 );
+			Snow::app()->log( "Could not create $dir", 3 );
 		
 		return $ret;
 		

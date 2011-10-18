@@ -20,6 +20,6 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Snow - <?php echo $snow_context->getPageTitle(); ?></title>
+<title>Snow - <?php echo Snow::app()->getPageTitle(); ?></title>
 </head>
 <body>

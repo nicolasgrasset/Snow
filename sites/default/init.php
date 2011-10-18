@@ -18,15 +18,15 @@
 
 
 // Example of Database initialization
-$snow_context->v['db'] = new snow_mysqli( 
-	$snow_context->getConfig( 'mysqldb_host' ), 
-	$snow_context->getConfig( 'mysqldb_user' ), 
-	$snow_context->getConfig( 'mysqldb_pass' ), 
-	$snow_context->getConfig( 'mysqldb_name' )  
+Snow::app()->v['db'] = new snow_mysqli( 
+	Snow::app()->getConfig( 'mysqldb_host' ), 
+	Snow::app()->getConfig( 'mysqldb_user' ), 
+	Snow::app()->getConfig( 'mysqldb_pass' ), 
+	Snow::app()->getConfig( 'mysqldb_name' )  
 	);
 
 	
 // Example of smart directory setup for requests against /admin
 $adminDir = new snow_admin();
 $adminDir->setUser( new snow_admin_user() );
-$snow_context->bindSmartDir( "admin", $adminDir );
+Snow::app()->bindSmartDir( "admin", $adminDir );
