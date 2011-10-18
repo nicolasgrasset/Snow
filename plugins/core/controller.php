@@ -129,9 +129,10 @@ class snow_core_controller
 		// Load the controller file, or render it if still running legacy
 		if( Snow::app()->getConfig("controllers.enabled", false) )
 			include( Snow::app()->getControllerFileName( $this->name ) );
-		else
+		elseif( Snow::app()->requestIsPage() )
 			$this->render( $this->name );
-		
+		else
+			$this->renderPartial( $this->name );
 	}
 	
 	
@@ -165,6 +166,9 @@ class snow_core_controller
 	
 	private function renderPartial( $name, Array $data = null, $theme = null, $returnString = false )
 	{
+		// Backward compatibility
+		$controllersEnabled = Snow::app()->getConfig("controllers.enabled", false);
+		
 		// Output with gz compression
 		if( !$returnString && Snow::app()->getConfig( 'ob_gzhandler', 'true' ) == 'true' )
 			ob_start('ob_gzhandler');
@@ -173,7 +177,7 @@ class snow_core_controller
 		elseif( $returnString )
 			ob_start();
 		
-		$load = Snow::app()->loadView( $name, $data, $theme );
+		$load = Snow::app()->loadView( $name, $data, $theme, $controllersEnabled );
 		
 		if( $returnString )
 		{
