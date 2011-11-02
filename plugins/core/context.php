@@ -39,6 +39,8 @@ class snow_core_context
 	
 	private $smartdirs = array();
 	
+	private $mobile = false;
+	
 	public $v = array();
 
 
@@ -69,7 +71,10 @@ class snow_core_context
    }
 
 	function getBaseWeb() {
-		return $this->baseweb;
+		if( $this->isMobile() )
+			return $this->getConfig( "mobile.baseurl", "http://" . @$_SERVER['SERVER_NAME'] );
+		else
+			return $this->getConfig( "baseurl", "http://" . @$_SERVER['SERVER_NAME'] );
    }
 	
 	
@@ -369,30 +374,6 @@ class snow_core_context
 	}
 	
 	
-	
-	public function loadView( $viewName, $data = null, $theme = null, $controllersEnabled = true )
-	{
-		$theme = is_null($theme) ? $this->getConfig("views.theme","web") : $theme;
-		
-		// legacy
-		if( !$controllersEnabled )
-			$snow_context = $this;
-		
-		if( $controllersEnabled )
-			$file = $this->basedir . "/". $this->getConfig("views.dir","views") ."/{$theme}/{$viewName}.php";
-		else
-			$file = $this->getControllerFileName( $viewName );
-		
-		if( $controllersEnabled && is_array($data) )
-			extract($data);
-		
-		if( file_exists($file) )
-			include( $file );
-		else		
-			return false;
-	}
-	
-	
 	public function setLogger( &$logger = null )
 	{
 		if( $logger instanceof isnow_logger  )
@@ -409,6 +390,16 @@ class snow_core_context
 			
 		$this->logger->log( $message, $level );
 			
+	}
+	
+	
+	public function setMobile( $isMobile = false )
+	{
+		$this->mobile = $isMobile === true;
+	}
+	public function isMobile()
+	{
+		return $this->mobile;
 	}
 	
 

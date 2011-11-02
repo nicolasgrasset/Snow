@@ -19,6 +19,7 @@ class snow_core_controller
 	
 	private $name;
 	private $extension = null;
+	private $theme = "web";
 	
 	private static $messages = array(
 	
@@ -118,6 +119,7 @@ class snow_core_controller
 	{
 		$this->name = $name;
 		$this->extension = $extension;
+		$this->theme = Snow::app()->getConfig("views.theme","web");
 		
 		// Run default action
 		$this->action();
@@ -135,14 +137,20 @@ class snow_core_controller
 			$this->renderPartial( $this->name );
 	}
 	
+	protected function setTheme( $theme )
+	{
+		$this->theme = $theme;
+	}
 	
-	private function render( $name, Array $data = null, $theme = null, $http_response_code = 200, Array $headers = null )
+	
+	private function render( $name, Array $data = null, $http_response_code = 200, Array $headers = null )
 	{
 		// Backward compatibility
 		$controllersEnabled = Snow::app()->getConfig("controllers.enabled", false);
 		
 		// HTTP Response code
-		$this->httpResponseCode( $http_response_code );
+		if( $http_response_code != 200 )
+			$this->httpResponseCode( $http_response_code );
 		
 		// Headers
 		if( !is_null($headers) )
@@ -150,7 +158,7 @@ class snow_core_controller
 		
 		// Get view
 		ob_start();
-		Snow::app()->loadView( $name, $data, $theme, $controllersEnabled );
+		$this->loadView( $name, $data, $this->theme, $controllersEnabled );
 		$page = ob_get_contents();
 		ob_end_clean();
 		
@@ -164,20 +172,16 @@ class snow_core_controller
 	}
 	
 	
-	private function renderPartial( $name, Array $data = null, $theme = null, $returnString = false )
+	private function renderPartial( $name, Array $data = null, $returnString = false )
 	{
 		// Backward compatibility
 		$controllersEnabled = Snow::app()->getConfig("controllers.enabled", false);
 		
-		// Output with gz compression
-		if( !$returnString && Snow::app()->getConfig( 'ob_gzhandler', 'true' ) == 'true' )
-			ob_start('ob_gzhandler');
-		
 		// User output buffer to return as string
-		elseif( $returnString )
+		if( $returnString )
 			ob_start();
 		
-		$load = Snow::app()->loadView( $name, $data, $theme, $controllersEnabled );
+		$load = $this->loadView( $name, $data, $this->theme, $controllersEnabled );
 		
 		if( $returnString )
 		{
@@ -190,7 +194,28 @@ class snow_core_controller
 		
 	}
 	
-	private function httpResponseCode( $http_response_code )
+	protected function loadView( $viewName, $data = null, $theme = "web", $controllersEnabled = true )
+	{
+		
+		// legacy
+		if( !$controllersEnabled )
+			$snow_context = Snow::app();
+		
+		if( $controllersEnabled )
+			$file = Snow::app()->getBaseDir() . "/". Snow::app()->getConfig("views.dir","views") ."/{$theme}/{$viewName}.php";
+		else
+			$file = Snow::app()->getControllerFileName( $viewName );
+		
+		if( $controllersEnabled && is_array($data) )
+			extract($data);
+		
+		if( file_exists($file) )
+			include( $file );
+		else		
+			return false;
+	}
+	
+	private function httpResponseCode( $http_response_code = 200 )
 	{
 		if( function_exists("http_response_code") )
 			http_response_code( $http_response_code );
@@ -212,7 +237,7 @@ class snow_core_controller
 	protected function loadHeader( $controllersEnabled = true )
 	{
 		if( $controllersEnabled )
-			Snow::app()->loadView( "layout/header" );
+			$this->loadView( "layout/header", null, $this->theme );
 		else
 		{
 			$snow_context = Snow::app();
@@ -224,13 +249,14 @@ class snow_core_controller
 	protected function loadFooter( $controllersEnabled = true )
 	{
 		if( $controllersEnabled )
-			Snow::app()->loadView( "layout/footer" );
+			$this->loadView( "layout/footer", null, $this->theme );
 		else
 		{
 			$snow_context = Snow::app();
 			include( Snow::app()->readFooter() );
 		}
 			
+		
 	}
 	
 	
@@ -238,6 +264,18 @@ class snow_core_controller
 	
 		return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == "xmlhttprequest") ? true : false;
 	
+	}
+	
+	public function isMobile() {
+		return Snow::app()->isMobile();
+	}
+	
+	private function getBaseWeb() {
+		return Snow::app()->getBaseWeb();
+	}
+	
+	private function getSiteUrl() {
+		return Snow::app()->getSiteUrl();
 	}
 }
 
